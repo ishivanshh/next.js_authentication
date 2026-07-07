@@ -1,8 +1,12 @@
-export default function UserProfilePage({params}: any){
-    return (
-        <div>
-            <h1>Profile-Page</h1>
-            <p>Profile page of user: {params.id}</p>
-        </div>
-    )
+export default async function UserProfilePage({params,}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return (
+    <div>
+        <h2>Profile Updated-id</h2>
+      User ID: {id}
+    </div>
+  );
 }
