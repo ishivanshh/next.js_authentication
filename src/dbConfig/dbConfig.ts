@@ -1,19 +1,44 @@
 import mongoose from "mongoose";
 
-export async function connect(){
-    try{
-        mongoose.connect(process.env.MONGO_URI!);
-        const connection = mongoose.connection;
+type MongooseCache = {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+};
 
-        connection.on("connect", () => {
-            console.log('mongodb connected successfully✅');
-        })
+declare global {
+    var mongooseCache: MongooseCache | undefined;
+}
 
-        connection.on("error", (err) => {
-            console.log("MongoDB connection error, Please check your connection string"  + err);
-            process.exit();
-        })
-    } catch(error){
-        console.log("MongoDB connection error, Please check your connection string"  + error);
+if (!process.env.MONGO_URI) {
+    throw new Error("Please define the MONGO_URI environment variable in .env");
+}
+
+const MONGO_URI = process.env.MONGO_URI;
+
+const cached = global.mongooseCache ?? { conn: null, promise: null };
+
+if (!global.mongooseCache) {
+    global.mongooseCache = cached;
+}
+
+export async function connect() {
+    if (cached.conn) {
+        return cached.conn;
+    }
+
+    if (!cached.promise) {
+        cached.promise = mongoose.connect(MONGO_URI).then((mongooseInstance) => {
+            console.log("MongoDB connected successfully");
+            return mongooseInstance;
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+        return cached.conn;
+    } catch (error) {
+        cached.promise = null;
+        console.log("MongoDB connection error:", error);
+        throw error;
     }
 }
