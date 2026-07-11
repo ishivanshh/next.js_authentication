@@ -46,7 +46,7 @@ export default function LoginPage() {
         
         <label htmlFor="email">email</label>
         <input 
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        className="p-2 border text-white border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
             id="email"
             type="text"
             value={user.email}
@@ -55,7 +55,7 @@ export default function LoginPage() {
             />
         <label htmlFor="password">password</label>
         <input 
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        className="p-2 border text-white border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
             id="password"
             type="password"
             value={user.password}
