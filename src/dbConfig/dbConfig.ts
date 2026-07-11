@@ -9,11 +9,11 @@ declare global {
     var mongooseCache: MongooseCache | undefined;
 }
 
-if (!process.env.MONGO_URI) {
-    throw new Error("Please define the MONGO_URI environment variable in .env");
-}
+const MONGO_URI = (process.env.MONGO_URI || process.env.MONGODB_URI || "").trim();
 
-const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) {
+    throw new Error("Please define the MONGO_URI or MONGODB_URI environment variable in .env");
+}
 
 const cached = global.mongooseCache ?? { conn: null, promise: null };
 

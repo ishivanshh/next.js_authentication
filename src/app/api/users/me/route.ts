@@ -1,20 +1,25 @@
 import { getDataFromToken } from "@/src/helpers/getDataFromToken";
 import { NextResponse, NextRequest } from "next/server";
-import User from "@/src/models/userModel.ts";
-import {connect} from "@/src/dbConfig/dbConfig";
+import User from "@/src/models/userModel.js";
+import { connect } from "@/src/dbConfig/dbConfig";
 
-connect();
-
-export async function GET(request : NextRequest){
+export async function GET(request: NextRequest) {
     try {
-        const userID = await getDataFromToken
-        (request);
-        const user = User.findOne({_id : userID}).select("-password");
+        await connect();
+
+        const userID = await getDataFromToken(request);
+        const user = await User.findById(userID).select("-password");
+
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
         return NextResponse.json({
-            message : "User Found",
-            data : user
-        })
-    } catch (error:any) {
-        return NextResponse.json({error : error.message}, {status : 400});
+            message: "User Found",
+            data: user,
+        });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Something went wrong";
+        return NextResponse.json({ error: message }, { status: 400 });
     }
 }

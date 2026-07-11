@@ -9,6 +9,7 @@ import {useRouter} from "next/navigation";
 export default function UserProfilePage(){
     const router = useRouter();
     const [data, setdata] = useState("nothing");
+    // for logout
     const logout = async () => {
         try {
             await axios.get("/api/users/logout");
@@ -19,6 +20,7 @@ export default function UserProfilePage(){
             toast.error(error.message);
         }
     }
+    // for getting user inforamtion
     const getUserDetails = async () => {
         const res = await axios.get("/api/users/me")
         console.log(res.data);
@@ -30,8 +32,7 @@ export default function UserProfilePage(){
             <h2 className="p-1 rounded bg-green-400">
                 {data=== "nothing" ? "nothing" : 
                 <Link href = {`/profile/${data}`}>{data}
-                    </Link>}
-                    </h2>
+                    </Link>}</h2>
 
 
             <button onClick={logout} className="bg-blue-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded">
